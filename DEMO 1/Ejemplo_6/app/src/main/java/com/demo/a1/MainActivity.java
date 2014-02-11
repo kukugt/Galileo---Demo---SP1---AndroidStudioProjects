@@ -43,6 +43,7 @@ public class MainActivity extends ActionBarActivity {
         btnOpenActivity = (Button) findViewById(R.id.btnOpenActivity);
 
         ButtonListener listener = new ButtonListener();
+
         btnList.setOnClickListener(listener);
         btnSearch.setOnClickListener(listener);
         btnOpenActivity.setOnClickListener(listener);
