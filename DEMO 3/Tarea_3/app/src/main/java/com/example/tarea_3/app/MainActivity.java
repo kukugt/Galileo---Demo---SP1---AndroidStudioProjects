@@ -1,22 +1,26 @@
 package com.example.tarea_3.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -130,9 +134,24 @@ public class MainActivity extends ActionBarActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+
+
+            View rootView = null;
+            switch (   getArguments().getInt(ARG_SECTION_NUMBER)   ) {
+                case 1: // STORE
+                    rootView = inflater.inflate(R.layout.fragment_store, container, false);
+
+                    this.Store(rootView);
+
+                    break;
+                case 2: // Photo
+                    rootView = inflater.inflate(R.layout.fragment_photo, container, false);
+                    break;
+                case 3: // Credits
+                    rootView = inflater.inflate(R.layout.fragment_credits, container, false);
+                    break;
+            }
+
             return rootView;
         }
 
@@ -142,6 +161,95 @@ public class MainActivity extends ActionBarActivity
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+
+
+
+
+
+
+        ListView lista;
+        ArrayAdapter<String> adaptador;
+        Intent intent = null;
+
+        listDetails datos;
+        List<listDetails> detalles = new ArrayList<listDetails>();
+        ArrayList<String> stores;
+
+
+        public void Store(View v){
+
+            datos = new listDetails("Tienda Tigo","3ra. Calle Guatemala", "12345678", "Lunea a viernes: 8AM - 8PM", "http://tigo.com", "info@tigo.com", new comments("Hola Mundo"), 4, new geolocation(1.0,4.0) );
+            detalles.add(datos);
+
+            datos = new listDetails("Tienda Zapatos","3ra. Calle Guatemala", "12345678", "Lunea a viernes: 8AM - 8PM", "http://tigo.com", "info@tigo.com", new comments("Hola Mundo"), 4, new geolocation(1.0,4.0) );
+            detalles.add(datos);
+
+            datos = new listDetails("Tienda Fruta","3ra. Calle Guatemala", "12345678", "Lunea a viernes: 8AM - 8PM", "http://tigo.com", "info@tigo.com", new comments("Hola Mundo"), 4, new geolocation(1.0,4.0) );
+            detalles.add(datos);
+
+
+
+
+            Iterator<listDetails> i = detalles.iterator();
+            while( i.hasNext() ) stores.add( (i.next()).nombre );
+
+            lista = (ListView) v.findViewById(R.id.list_stores);
+            adaptador = new ArrayAdapter<String>( v.getContext() ,android.R.layout.simple_list_item_1,  stores   );
+
+            lista.setAdapter(adaptador);
+            lista.setTextFilterEnabled(true);
+            lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
+                    intent = new Intent( v.getContext() , DetailsActivity.class);
+                    intent.putExtra("pos", (int)position);
+                    intent.putStringArrayListExtra("data", detalles.get(position).getArrayListDatos() );
+                    intent.putStringArrayListExtra("comment", detalles.get(position).getArrayListComment() );
+                    intent.putStringArrayListExtra("geo", detalles.get(position).getArrayListGeo() );
+
+
+                    startActivity(intent);
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 }
